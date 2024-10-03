@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <title>Registro de Horas</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Registro de Horas</h1>
+    </header>
+
+    <div class="container">
+        <div class="data-navegacao">
+            <button class="button-header" id="anterior" onclick="alterarData(-1)">Anterior</button>
+            <span class="data-heder" id="data-atual"></span>
+            <button class="button-header" id="proximo" onclick="alterarData(1)">Próximo</button>
+        </div>
+
+        <div id="totais">
+            <div id="totalHorasTrabalhadas">Total Horas Trabalhadas:<br>00:00</div>
+            <div id="totalHorasExtras">Total Horas Extras:<br>00:00</div>
+            <div id="estaDevendo"><span>Devendo:</span><br>-00:00</div>
+        </div>
+
+        <div id="registroHoras">
+            <label class="texto-div1" for="entrada">Entrada:</label>
+            <input class="put-div1" type="time" id="entrada">
+            
+            <label class="texto-div2" for="refeicaoInicio">Início Refeição:</label>
+            <input class="put-div2" type="time" id="refeicaoInicio">
+
+            <label class="texto-div3" for="refeicaoFim">Fim Refeição:</label>
+            <input class="put-div3" type="time" id="refeicaoFim">
+
+            <label class="texto-div4" for="fimJornada">Fim da Jornada:</label>
+            <input class="put-div4" type="time" id="fimJornada">
+        </div>
+
+        <button class="button-registro" onclick="calcularHoras()">Registrar Horas Trabalhadas</button>
+
+        <div id="registroHorasExtras">
+            <label class="texto-div5" for="entradaExtra">Entrada Extra:</label>
+            <input class="put-div5" type="time" id="entradaExtra">
+
+            <label class="texto-div6" for="saidaExtra">Saída Extra:</label>
+            <input class="put-div6" type="time" id="saidaExtra">
+        </div>
+
+        <button class="button-registro" onclick="calcularHorasExtras()">Registrar Horas Extras</button>
+
+        <div id="registroTabela">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Total Horas Trabalhadas</th>
+                        <th>Total Horas Extras</th>
+                    </tr>
+                </thead>
+                <tbody id="tabelaRegistros"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
