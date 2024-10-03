@@ -1,4 +1,4 @@
-const registros = {};
+const registros = JSON.parse(localStorage.getItem("registros")) || {};
 let dataAtual = new Date();
 
 function iniciarModoEscuro() {
@@ -9,6 +9,7 @@ function alterarData(direcao) {
     dataAtual.setDate(dataAtual.getDate() + direcao);
     exibirData();
     resetarRegistros();
+    carregarDadosSalvos();
 }
 
 function exibirData() {
@@ -28,13 +29,14 @@ function resetarRegistros() {
 }
 
 function calcularHoras() {
-    const entrada = document.getElementById("entrada").valueAsDate;
-    const refeicaoInicio = document.getElementById("refeicaoInicio").valueAsDate;
-    const refeicaoFim = document.getElementById("refeicaoFim").valueAsDate;
-    const fimJornada = document.getElementById("fimJornada").valueAsDate;
+    const entrada = document.getElementById("entrada").value;
+    const refeicaoInicio = document.getElementById("refeicaoInicio").value;
+    const refeicaoFim = document.getElementById("refeicaoFim").value;
+    const fimJornada = document.getElementById("fimJornada").value;
 
     if (entrada && refeicaoInicio && refeicaoFim && fimJornada) {
-        const horasTrabalhadas = (fimJornada - entrada - (refeicaoFim - refeicaoInicio)) / (1000 * 60 * 60);
+        const horasTrabalhadas = (new Date(`1970-01-01T${fimJornada}:00`) - new Date(`1970-01-01T${entrada}:00`) - 
+            (new Date(`1970-01-01T${refeicaoFim}:00`) - new Date(`1970-01-01T${refeicaoInicio}:00`))) / (1000 * 60 * 60);
         const horasDevidas = 7 - horasTrabalhadas;
 
         const dataFormatada = dataAtual.toISOString().split('T')[0];
@@ -44,17 +46,18 @@ function calcularHoras() {
         registros[dataFormatada].horasTrabalhadas = horasTrabalhadas;
         registros[dataFormatada].devido = horasDevidas;
 
+        salvarRegistros();
         atualizarTotais();
         adicionarRegistroTabela();
     }
 }
 
 function calcularHorasExtras() {
-    const entradaExtra = document.getElementById("entradaExtra").valueAsDate;
-    const saidaExtra = document.getElementById("saidaExtra").valueAsDate;
+    const entradaExtra = document.getElementById("entradaExtra").value;
+    const saidaExtra = document.getElementById("saidaExtra").value;
 
     if (entradaExtra && saidaExtra) {
-        const horasExtras = (saidaExtra - entradaExtra) / (1000 * 60 * 60);
+        const horasExtras = (new Date(`1970-01-01T${saidaExtra}:00`) - new Date(`1970-01-01T${entradaExtra}:00`)) / (1000 * 60 * 60);
 
         const dataFormatada = dataAtual.toISOString().split('T')[0];
         if (!registros[dataFormatada]) {
@@ -62,8 +65,26 @@ function calcularHorasExtras() {
         }
         registros[dataFormatada].horasExtras = horasExtras;
 
+        salvarRegistros();
         atualizarTotais();
         adicionarRegistroTabela();
+    }
+}
+
+function salvarRegistros() {
+    localStorage.setItem("registros", JSON.stringify(registros));
+}
+
+function carregarDadosSalvos() {
+    const dataFormatada = dataAtual.toISOString().split('T')[0];
+    if (registros[dataFormatada]) {
+        const registro = registros[dataFormatada];
+        document.getElementById("entrada").value = registro.entrada || "";
+        document.getElementById("refeicaoInicio").value = registro.refeicaoInicio || "";
+        document.getElementById("refeicaoFim").value = registro.refeicaoFim || "";
+        document.getElementById("fimJornada").value = registro.fimJornada || "";
+        document.getElementById("entradaExtra").value = registro.entradaExtra || "";
+        document.getElementById("saidaExtra").value = registro.saidaExtra || "";
     }
 }
 
@@ -91,21 +112,57 @@ function atualizarTotais() {
     }
 }
 
+// Função para adicionar registros na tabela
 function adicionarRegistroTabela() {
     const tabelaRegistros = document.getElementById("tabelaRegistros");
-    tabelaRegistros.innerHTML = "";
+    const novaLinha = tabelaRegistros.insertRow();
+    const dataFormatada = dataAtual.toISOString().split('T')[0];
 
-    for (let data in registros) {
+    const celulaData = novaLinha.insertCell(0);
+    const celulaHorasTrabalhadas = novaLinha.insertCell(1);
+    const celulaHorasExtras = novaLinha.insertCell(2);
+
+    celulaData.textContent = dataFormatada;
+    celulaHorasTrabalhadas.textContent = formatarHoras(registros[dataFormatada].horasTrabalhadas);
+    celulaHorasExtras.textContent = formatarHoras(registros[dataFormatada].horasExtras);
+
+    salvarTabela(); // Salva a tabela sempre que ela for atualizada
+}
+
+// Função para salvar a tabela no localStorage
+function salvarTabela() {
+    const tabelaRegistros = document.getElementById("tabelaRegistros");
+    const registrosTabela = [];
+
+    for (let i = 0; i < tabelaRegistros.rows.length; i++) {
+        const row = tabelaRegistros.rows[i];
+        const data = row.cells[0].textContent;
+        const horasTrabalhadas = row.cells[1].textContent;
+        const horasExtras = row.cells[2].textContent;
+        registrosTabela.push({ data, horasTrabalhadas, horasExtras });
+    }
+
+    localStorage.setItem("registrosTabela", JSON.stringify(registrosTabela));
+}
+
+// Função para carregar a tabela do localStorage
+function carregarTabela() {
+    const registrosTabela = JSON.parse(localStorage.getItem("registrosTabela")) || [];
+
+    const tabelaRegistros = document.getElementById("tabelaRegistros");
+    tabelaRegistros.innerHTML = ""; // Limpa a tabela antes de carregar os dados
+
+    registrosTabela.forEach(registro => {
         const novaLinha = tabelaRegistros.insertRow();
 
         const celulaData = novaLinha.insertCell(0);
         const celulaHorasTrabalhadas = novaLinha.insertCell(1);
         const celulaHorasExtras = novaLinha.insertCell(2);
 
-        celulaData.textContent = data;
-        celulaHorasTrabalhadas.textContent = formatarHoras(registros[data].horasTrabalhadas);
-        celulaHorasExtras.textContent = formatarHoras(registros[data].horasExtras);
-    }
+        celulaData.textContent = registro.data;
+        celulaHorasTrabalhadas.textContent = registro.horasTrabalhadas;
+        celulaHorasExtras.textContent = registro.horasExtras;
+    });
 }
 
 function formatarHoras(horas) {
@@ -114,4 +171,10 @@ function formatarHoras(horas) {
     return `${String(horasInteiras).padStart(2, '0')}:${String(minutos).padStart(2, '0')}`;
 }
 
-window.onload = exibirData;
+// Carregar os dados da tabela e registros salvos ao carregar a página
+window.onload = function() {
+    exibirData();
+    carregarDadosSalvos();
+    carregarTabela(); // Carrega a tabela
+    atualizarTotais();
+};
