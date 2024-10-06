@@ -102,13 +102,13 @@ function atualizarTotais() {
     document.getElementById("totalHorasTrabalhadas").textContent = `Total Horas Trabalhadas: ${formatarHoras(totalHorasTrabalhadas)}`;
     document.getElementById("totalHorasExtras").textContent = `Total Horas Extras: ${formatarHoras(totalHorasExtras)}`;
 
-    const estaDevendoEl = document.getElementById("Devendo");
+    const DevendoEl = document.getElementById("Devendo");
     if (totalDevido < 0) {
-        estaDevendoEl.textContent = `Devendo: -${formatarHoras(Math.abs(totalDevido))}`;
-        estaDevendoEl.classList.add("negativo");
+        DevendoEl.textContent = `Devendo: ${formatarHoras(Math.abs(totalDevido))}`;
+        DevendoEl.classList.add("negativo");
     } else {
-        estaDevendoEl.textContent = `Devendo: ${formatarHoras(totalDevido)}`;
-        estaDevendoEl.classList.remove("negativo");
+        DevendoEl.textContent = `Devendo: -${formatarHoras(totalDevido)}`;
+        DevendoEl.classList.remove("negativo");
     }
 }
 

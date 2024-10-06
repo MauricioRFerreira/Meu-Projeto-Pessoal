@@ -212,12 +212,12 @@ header {
     text-align: center;
 }
 
-#estaDevendo {
-    color: #ffffff;
+#Devendo {
+    color: red;
 }
 
-#estaDevendo.negativo {
-    color: red;
+#Devendo.negativo {
+    color: green;
 }
 
 /* Ajustes adicionais para telas menores */
