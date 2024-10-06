@@ -115,16 +115,32 @@ function atualizarTotais() {
 // Função para adicionar registros na tabela
 function adicionarRegistroTabela() {
     const tabelaRegistros = document.getElementById("tabelaRegistros");
-    const novaLinha = tabelaRegistros.insertRow();
     const dataFormatada = dataAtual.toISOString().split('T')[0];
 
-    const celulaData = novaLinha.insertCell(0);
-    const celulaHorasTrabalhadas = novaLinha.insertCell(1);
-    const celulaHorasExtras = novaLinha.insertCell(2);
+    // Verifica se já existe uma linha com a data atual
+    let linhaExistente = null;
+    for (let i = 0; i < tabelaRegistros.rows.length; i++) {
+        if (tabelaRegistros.rows[i].cells[0].textContent === dataFormatada) {
+            linhaExistente = tabelaRegistros.rows[i];
+            break;
+        }
+    }
 
-    celulaData.textContent = dataFormatada;
-    celulaHorasTrabalhadas.textContent = formatarHoras(registros[dataFormatada].horasTrabalhadas);
-    celulaHorasExtras.textContent = formatarHoras(registros[dataFormatada].horasExtras);
+    if (linhaExistente) {
+        // Atualiza a linha existente
+        linhaExistente.cells[1].textContent = formatarHoras(registros[dataFormatada].horasTrabalhadas);
+        linhaExistente.cells[2].textContent = formatarHoras(registros[dataFormatada].horasExtras);
+    } else {
+        // Se não existir, cria uma nova linha
+        const novaLinha = tabelaRegistros.insertRow();
+        const celulaData = novaLinha.insertCell(0);
+        const celulaHorasTrabalhadas = novaLinha.insertCell(1);
+        const celulaHorasExtras = novaLinha.insertCell(2);
+
+        celulaData.textContent = dataFormatada;
+        celulaHorasTrabalhadas.textContent = formatarHoras(registros[dataFormatada].horasTrabalhadas);
+        celulaHorasExtras.textContent = formatarHoras(registros[dataFormatada].horasExtras);
+    }
 
     salvarTabela(); // Salva a tabela sempre que ela for atualizada
 }
