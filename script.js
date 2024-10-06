@@ -8,7 +8,7 @@ function iniciarModoEscuro() {
 function alterarData(direcao) {
     dataAtual.setDate(dataAtual.getDate() + direcao);
     exibirData();
-    resetarRegistros();
+    resetarRegistros();s
     carregarDadosSalvos();
 }
 
