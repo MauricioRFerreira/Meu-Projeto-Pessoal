@@ -225,7 +225,7 @@ color: #ffffff;
 }
 
 /* Ajustes adicionais para telas menores */
-@media (max-width: 900px) {
+@media (max-width: 950px) {
 
     /* Centralizar o título */
     header {
