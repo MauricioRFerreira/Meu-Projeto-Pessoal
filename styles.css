@@ -213,15 +213,11 @@ header {
 }
 
 #estaDevendo {
-    color: rgb(166, 30, 30);
-}
-
-#estaDevendo span{
-color: #ffffff;
+    color: #ffffff;
 }
 
 #estaDevendo.negativo {
-    color: green;
+    color: red;
 }
 
 /* Ajustes adicionais para telas menores */
